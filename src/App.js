@@ -1,24 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from 'react';
+import FoodContainer from './FoodContainer';
+import foodsJSON from './foods.json';
+import AddFood from './AddFood';
+import SearchInput from './SearchInput';
 
 function App() {
+  const [foods, setFoods] = useState(foodsJSON);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  function handleNewFood(newFood) {
+    setFoods([...foods, newFood]);
+  }
+
+  function handleDeleteFood(name) {
+    const newFoods = foods.filter((food) => {
+      if (food.name === name) {
+        return false;
+      }
+      return true;
+    });
+
+    setFoods(newFoods);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <AddFood handleNewFood={handleNewFood} />
+      <SearchInput searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      <FoodContainer
+        foods={foods.filter((food) =>
+          food.name.toLowerCase().includes(searchTerm.toLowerCase())
+        )}
+        handleDeleteFood={handleDeleteFood}
+      />
+    </>
   );
 }
 
